@@ -52,10 +52,7 @@ let globalCoolDownTimeout: number | undefined;
 let globalSkipDelayTimeout: number | undefined;
 
 export interface TooltipRootOptions
-	extends Omit<
-		PopperRootOptions,
-		"anchorRef" | "contentRef" | "onCurrentPlacementChange"
-	> {
+	extends Omit<PopperRootOptions, "anchorRef" | "contentRef"> {
 	/** The controlled open state of the tooltip. */
 	open?: boolean;
 
@@ -137,6 +134,7 @@ export function TooltipRoot(props: TooltipRootProps) {
 		"skipDelayDuration",
 		"ignoreSafeArea",
 		"forceMount",
+		"onCurrentPlacementChange",
 	]);
 
 	let closeTimeoutId: number | undefined;
@@ -413,7 +411,10 @@ export function TooltipRoot(props: TooltipRootProps) {
 			<Popper
 				anchorRef={triggerRef}
 				contentRef={contentRef}
-				onCurrentPlacementChange={setCurrentPlacement}
+				onCurrentPlacementChange={(value) => {
+					setCurrentPlacement(value);
+					local.onCurrentPlacementChange?.(value);
+				}}
 				{...others}
 			/>
 		</TooltipContext.Provider>
